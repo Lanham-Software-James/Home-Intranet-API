@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Build and Deploy
 
 on:
   push:
@@ -10,27 +10,38 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  deploy:
+    name: Push to EC2 Instance
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout the code
+        uses: actions/checkout@v3
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+            - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Deploy to my Lightsail instance
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          TARGET: "/var/www/html/api/"
 
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
