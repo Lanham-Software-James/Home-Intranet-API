@@ -26,7 +26,7 @@ $app->add(function ($request, $handler) {
 
 $app->get('/', function (Request $request, Response $response, $args) {
 
-  $response->getBody()->write('Home Intranet API Version 0.01');
+  $response->getBody()->write('Home Intranet API Version 0.2');
   return $response;
 
 });
