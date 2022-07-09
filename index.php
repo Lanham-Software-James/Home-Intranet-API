@@ -31,6 +31,15 @@ $app->get('/', function (Request $request, Response $response, $args) {
 
 });
 
+$app->get('/countbooks', function (Request $request, Response $response, $args) {
+
+  $db = new DB();
+  $q = json_encode($db->countBooks());
+  $response->getBody()->write($q);
+  return $response->withHeader('Content-Type', 'application/json');
+
+});
+
 $app->get('/listbooks', function (Request $request, Response $response, $args) {
 
   $db = new DB();
