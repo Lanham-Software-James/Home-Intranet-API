@@ -49,10 +49,19 @@ $app->group('/library', function (RouteCollectorProxy $group) {
   });
 
   //Function to list all the books and authors
-  $group->get('/list', function (Request $request, Response $response, $args) {
+  $group->get('/books', function (Request $request, Response $response, $args) {
 
     $db = new DB();
     $q = json_encode($db->getBookAuthors());
+    $response->getBody()->write($q);
+    return $response->withHeader('Content-Type', 'application/json');
+  });
+
+  //Function to list all the authors
+  $group->get('/authors', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $q = json_encode($db->getAuthors());
     $response->getBody()->write($q);
     return $response->withHeader('Content-Type', 'application/json');
   });
