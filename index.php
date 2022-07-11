@@ -90,19 +90,16 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     return $response;
   });
 
-  /**
-  *** THIS NEEDS TO BE FIXED!!!
-  ***/
-  //Function to delete a book
-  // $group->delete('/delete', function (Request $request, Response $response, $args) {
+  // Function to delete a book
+  $group->delete('/delete', function (Request $request, Response $response, $args) {
 
-  //   $db = new DB();
-  //   $body = $request->getParsedBody();
+    $db = new DB();
+    $body = $request->getParsedBody();
     
-  //   $db->deleteBook($body['bookID']);
+    $db->deleteBook($body['bookID']);
     
-  //   return $response;
-  // });
+    return $response;
+  });
 });
 
 $app->run();
