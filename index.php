@@ -39,15 +39,6 @@ $app->get('/', function (Request $request, Response $response, $args) {
 **/
 $app->group('/library', function (RouteCollectorProxy $group) {
 
-  //Function to display number of books
-  $group->get('/count', function (Request $request, Response $response, $args) {
-
-    $db = new DB();
-    $q = json_encode($db->countBooks());
-    $response->getBody()->write($q);
-    return $response->withHeader('Content-Type', 'application/json');
-  });
-
   //Function to list all the books and authors
   $group->get('/books', function (Request $request, Response $response, $args) {
 
@@ -106,6 +97,48 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $body = $request->getParsedBody();
     
     $db->deleteBook($body['bookID']);
+    
+    return $response;
+  });
+});
+
+$app->group('/greenhouse', function (RouteCollectorProxy $group) {
+  //Function to list all the plants
+  $group->get('/plants', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $data = json_encode($db->getPlants());
+    $response->getBody()->write($data);
+    return $response->withHeader('Content-Type', 'application/json');
+  });
+
+  //Function to list all the plant species
+  $group->get('/species', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $data = json_encode($db->getPlantSpecies());
+    $response->getBody()->write($data);
+    return $response->withHeader('Content-Type', 'application/json');
+  });  
+
+  //Function to add a new plant
+  $group->post('/add', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $body = $request->getParsedBody();
+    
+    $db->addPlant($body['plantName'], $body['plantSpecies'], $body['plantLocation']);
+    
+    return $response;
+  });
+
+  //Function to delete a plant
+  $group->delete('/delete', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $body = $request->getParsedBody();
+    
+    $db->deletePlant($body['plantID']);
     
     return $response;
   });
