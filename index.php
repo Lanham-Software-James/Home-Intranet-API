@@ -121,6 +121,15 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     return $response->withHeader('Content-Type', 'application/json');
   });  
 
+  //Function to list all the plant locations
+  $group->get('/locations', function (Request $request, Response $response, $args) {
+
+    $db = new DB();
+    $data = json_encode($db->getPlantLocations());
+    $response->getBody()->write($data);
+    return $response->withHeader('Content-Type', 'application/json');
+  });
+
   //Function to add a new plant
   $group->post('/add', function (Request $request, Response $response, $args) {
 
