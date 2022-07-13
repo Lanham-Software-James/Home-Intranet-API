@@ -96,7 +96,7 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $db = new DB();
     $body = $request->getParsedBody();
     
-    $db->deleteBook($body['bookID']);
+    $db->deleteBook($body['bookID'], $body['authorID']);
     
     return $response;
   });
