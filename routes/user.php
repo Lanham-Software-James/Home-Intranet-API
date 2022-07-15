@@ -8,6 +8,24 @@ use HomeIntranet\Database\User;
 use \Firebase\JWT\JWT;
 
 $app->group('/user', function (RouteCollectorProxy $group) {
+  //Function to list all the books and authors
+  $group->get('/list', function (Request $request, Response $response, $args) {
+
+    $decoded = $request->getAttribute("token");
+    $permissions = json_decode($decoded["scope"], true);
+      
+    if(!$permissions['user_read']){
+      return $response->withStatus(401);
+    }    
+
+    $db = new User();
+    
+    $q = json_encode($db->getUsers());
+    $response->getBody()->write($q);
+    
+    return $response->withHeader('Content-Type', 'application/json');;
+  });
+
 
   //Function to list all the books and authors
   $group->post('/add', function (Request $request, Response $response, $args) {
