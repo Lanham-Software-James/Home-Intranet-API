@@ -1,2 +1,2 @@
 /vendor/*
-cors.ini
+/config/*.ini
