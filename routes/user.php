@@ -65,4 +65,22 @@ $app->group('/user', function (RouteCollectorProxy $group) {
     return $response;
   });
 
+    //Function to delete a user
+    $group->delete('/delete', function (Request $request, Response $response, $args) {
+
+      $decoded = $request->getAttribute("token");
+      $permissions = json_decode($decoded["scope"], true);
+        
+      if(!$permissions['user_delete']){
+        return $response->withStatus(401);
+      }    
+  
+      $db = new User();
+      $body = $request->getParsedBody();
+      
+      $db->deleteUser($body['userID']);
+      
+      return $response;
+    });
+
 });
