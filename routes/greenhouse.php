@@ -55,6 +55,22 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     return $response->withHeader('Content-Type', 'application/json');
   });
 
+  //Function to list all the watering frequenices
+  $group->get('/frequencies', function (Request $request, Response $response, $args) {
+
+    $decoded = $request->getAttribute("token");
+    $permissions = json_decode($decoded["scope"], true);
+  
+    if(!$permissions['greenhouse_read']){
+      return $response->withStatus(401);
+    }
+  
+    $db = new Greenhouse();
+    $data = json_encode($db->getwaterFrequencies());
+    $response->getBody()->write($data);
+    return $response->withHeader('Content-Type', 'application/json');
+  });
+
   //Function to add a new plant
   $group->post('/add', function (Request $request, Response $response, $args) {
 
@@ -68,7 +84,7 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     $db = new Greenhouse();
     $body = $request->getParsedBody();
 
-    $db->addPlant($body['plantName'], $body['plantSpecies'], $body['plantLocation']);
+    $db->addPlant($body['plantName'], $body['plantSpecies'], $body['plantLocation'], $body['lastWater'], $body['waterFrequency']);
     
     return $response;
   });
