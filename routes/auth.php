@@ -40,7 +40,7 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
       $resVals = [
         "success" => true,
         "message" => "Login Successful!",
-        "is_admin" => ($user['user_role'] === 3) ? 'true' : 'false',
+        "is_admin" => ($user['user_role'] == 3) ? 'true' : 'false',
         "token" => generateToken($user['user_role'])
       ];
 
