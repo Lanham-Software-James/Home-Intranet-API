@@ -54,5 +54,6 @@ require __DIR__ . "/routes/auth.php";
 require __DIR__ . "/routes/greenhouse.php";
 require __DIR__ . "/routes/library.php";
 require __DIR__ . "/routes/user.php";
+require __DIR__ . "/routes/litterbox.php";
 
 $app->run();

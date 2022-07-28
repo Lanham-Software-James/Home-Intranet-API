@@ -101,9 +101,6 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
 
     $db = new Greenhouse();
     $body = $request->getParsedBody();
-
-    $decoded = $request->getAttribute("token");
-    
     
     $db->deletePlant($body['plantID']);
     
