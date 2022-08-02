@@ -36,8 +36,9 @@ $app->group('/litterbox', function (RouteCollectorProxy $group) {
     $db = new LitterBox();
     $body = $request->getParsedBody();
 
-    $db->addFoster($body['fosterName']);
+    $newFosterID = $db->addFoster($body['fosterName']);
     
+    $db->logActivity($decoded['user'], 14, $newFosterID['data']['new_foster_id']);
     return $response;
   });
 
@@ -54,9 +55,9 @@ $app->group('/litterbox', function (RouteCollectorProxy $group) {
     $db = new LitterBox();
     $body = $request->getParsedBody();
     
-    
     $db->deleteFoster($body['fosterID']);
     
+    $db->logActivity($decoded['user'], 15, $body['fosterID']);
     return $response;
   });
 });

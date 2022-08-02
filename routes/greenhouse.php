@@ -84,8 +84,9 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     $db = new Greenhouse();
     $body = $request->getParsedBody();
 
-    $db->addPlant($body['plantName'], $body['plantSpecies'], $body['plantLocation'], $body['lastWater'], $body['waterFrequency']);
+    $newPlantID = $db->addPlant($body['plantName'], $body['plantSpecies'], $body['plantLocation'], $body['lastWater'], $body['waterFrequency']);
     
+    $db->logActivity($decoded['user'], 12, $newPlantID['data']['new_plant_id']);
     return $response;
   });
 
@@ -104,6 +105,7 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     
     $db->deletePlant($body['plantID']);
     
+    $db->logActivity($decoded['user'], 13, $body['plantID']);
     return $response;
   });
 });

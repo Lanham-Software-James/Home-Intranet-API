@@ -23,6 +23,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
     $q = json_encode($db->getUsers());
     $response->getBody()->write($q);
     
+    // $db->logActivity($decoded['user'], 8); Disable read logging, garbage
     return $response->withHeader('Content-Type', 'application/json');;
   });
 
@@ -41,6 +42,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
     $q = json_encode($db->getRoles());
     $response->getBody()->write($q);
     
+    // $db->logActivity($decoded['user'], 9);  Disable read logging, garbage
     return $response->withHeader('Content-Type', 'application/json');;
   });
 
@@ -60,8 +62,9 @@ $app->group('/user', function (RouteCollectorProxy $group) {
 
     $hashed_password = password_hash($body['password'], PASSWORD_DEFAULT);
     
-    $db->addUser($body['userName'], $hashed_password, $body['firstName'], $body['lastName'], $body['userRole']);
+    $newUserID = $db->addUser($body['userName'], $hashed_password, $body['firstName'], $body['lastName'], $body['userRole']);
     
+    $db->logActivity($decoded['user'], 10, $newUserID['data']['new_user_id']);
     return $response;
   });
 
@@ -80,6 +83,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
       
       $db->deleteUser($body['userID']);
       
+      $db->logActivity($decoded['user'], 11, $body['userID']);
       return $response;
     });
 

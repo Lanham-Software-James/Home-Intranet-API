@@ -22,8 +22,10 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     }
 
     $db = new Library();
-    $q = json_encode($db->getBookAuthors());
-    $response->getBody()->write($q);
+    
+    $data = json_encode($db->getBookAuthors());
+    $response->getBody()->write($data);
+    
     return $response->withHeader('Content-Type', 'application/json');
   });
 
@@ -38,8 +40,10 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     }
 
     $db = new Library();
-    $q = json_encode($db->getAuthors());
-    $response->getBody()->write($q);
+
+    $data = json_encode($db->getAuthors());
+    $response->getBody()->write($data);
+    
     return $response->withHeader('Content-Type', 'application/json');
   });
 
@@ -49,15 +53,17 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $decoded = $request->getAttribute("token");
     $permissions = json_decode($decoded["scope"], true);
 
-    if(!$permissions['library_read']){
+    if(!$permissions['library_check']){
       return $response->withStatus(401);
     }
 
     $db = new Library();
     $body = $request->getParsedBody();
 
+    
     $db->checkInBook($body['bookID']);
     
+    $db->logActivity($decoded['user'], 3, $body['bookID']);
     return $response;
   });
 
@@ -67,15 +73,16 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $decoded = $request->getAttribute("token");
     $permissions = json_decode($decoded["scope"], true);
 
-    if(!$permissions['library_read']){
+    if(!$permissions['library_check']){
       return $response->withStatus(401);
     }
 
     $db = new Library();
     $body = $request->getParsedBody();
 
-    $db->checkOutBook($body['bookID'], $body['name']);
-    
+    $db->checkOutBook($body['bookID'], $decoded['user']);
+
+    $db->logActivity($decoded['user'], 4, $body['bookID']);
     return $response;
   });
 
@@ -92,8 +99,9 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $db = new Library();
     $body = $request->getParsedBody();
     
-    $db->addBook($body['bookTitle'], $body['authorFirstName'], $body['authorMiddleName'], $body['authorLastName']);
-    
+    $newBookID = $db->addBook($body['bookTitle'], $body['authorFirstName'], $body['authorMiddleName'], $body['authorLastName']);
+
+    $db->logActivity($decoded['user'], 5, $newBookID['data']['new_book_id']);
     return $response;
   });
 
@@ -111,7 +119,8 @@ $app->group('/library', function (RouteCollectorProxy $group) {
     $body = $request->getParsedBody();
     
     $db->deleteBook($body['bookID'], $body['authorID']);
-    
+
+    $db->logActivity($decoded['user'], 6, $body['bookID']);
     return $response;
   });
 });
