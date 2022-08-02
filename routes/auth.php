@@ -40,7 +40,7 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
       $resVals = [
         "success" => true,
         "message" => "Login Successful!",
-        "is_admin" => ($user['user_role'] == 3) ? 'true' : 'false',
+        "role" => $user['user_role'],
         "token" => generateToken($user['user_role'], $user['user_name'])
       ];
 
@@ -57,7 +57,7 @@ function generateToken($role, $username): string {
 
   $secret = parse_ini_file(__DIR__.'/../config/secret.ini');
   $db = new User();
-  $query = $db->getPermissionsByRoleID($role);
+  $query = $db->getPermissionsByRole($role);
 
   $values = [
     "user" => $username,
