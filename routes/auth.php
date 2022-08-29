@@ -20,8 +20,8 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
       $values = [
         "success" => false,
         "message" => "Incorrect Username.",
-        "is_admin" => null,
-        "token" => null
+        "role" => "",
+        "token" => ""
       ];
       
       $response->getBody()->write(json_encode($values));
@@ -30,8 +30,8 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
       $values = [
         "success" => false,
         "message" => "Incorrect Password.",
-        "is_admin" => null,
-        "token" => null
+        "role" => " ",
+        "token" => " "
       ];
       
       $response->getBody()->write(json_encode($values));
