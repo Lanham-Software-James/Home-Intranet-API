@@ -72,7 +72,7 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
       "Authorization: Bearer " . $data['access_token']
     ];
 
-    $body = json_encode( ["devicetype"=>"home_intranet"] );
+    $body = json_encode( ["devicetype"=>$hue['app_name']] );
 
     $hue_data = hueCurl('POST', $url, $headers, $body);
 
