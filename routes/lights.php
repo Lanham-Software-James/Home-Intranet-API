@@ -38,6 +38,10 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
     $body = "grant_type=authorization_code&code=$code";
 
     $hue_data = hueCurl('POST', $url, $headers, $body);
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
     $data['access_token'] = $hue_data['access_token'];
     $data['refresh_token'] = $hue_data['refresh_token'];
@@ -53,7 +57,11 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
 
     $body = json_encode( array( "linkbutton"=> true ) );
 
-    hueCurl('PUT', $url, $headers, $body);
+    $hue_data = hueCurl('PUT', $url, $headers, $body);
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
 
     //Get Username
@@ -67,6 +75,11 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
     $body = json_encode( ["devicetype"=>"home_intranet"] );
 
     $hue_data = hueCurl('POST', $url, $headers, $body);
+
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
     $data['username'] = $hue_data[0]['success']['username'];
 
@@ -102,6 +115,11 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
 
     $hue_data = hueCurl('POST', $url, $headers, $body);
 
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
+
     $data['access_token'] = $hue_data['access_token'];
     $data['refresh_token'] = $hue_data['refresh_token'];
 
@@ -116,8 +134,12 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
 
     $body = json_encode( array( "linkbutton"=> true ) );
 
-    hueCurl('PUT', $url, $headers, $body);
+    $hue_data = hueCurl('PUT', $url, $headers, $body);
 
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
     //Get Username
     $url = HUE_BASE_URL . "route/api";
@@ -132,6 +154,11 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
     $hue_data = hueCurl('POST', $url, $headers, $body);
 
     $data['username'] = $hue_data[0]['success']['username'];
+
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
     //Send Response
     $response->getBody()->write( json_encode( $data ) );
@@ -160,7 +187,8 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
     $hue_data = hueCurl('GET', $url, $headers);
 
     if(isset($hue_data['error'])){
-      return $response->withStatus(401);
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
     }
 
     //Send Response
@@ -199,6 +227,11 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
     ];
 
     $hue_data = hueCurl('PUT', $url, $headers, $body);
+
+    if(isset($hue_data['error'])){
+      $response->getBody()->write( json_encode($hue_data['error_message']) );
+      return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
+    }
 
     //Send Response
     $response->getBody()->write( json_encode($hue_data) );
@@ -239,7 +272,7 @@ $app->group('/hue', function (RouteCollectorProxy $group) {
 
       if(isset($hue_data['error'])){
         $response->getBody()->write( json_encode($hue_data['error_message']) );
-        return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+        return $response->withStatus($hue_data['error'])->withHeader('Content-Type', 'application/json');
       }
   
       //Send Response
