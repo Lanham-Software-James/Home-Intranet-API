@@ -35,7 +35,7 @@ $app->add(function ($request, $handler) {
   $response = $handler->handle($request);
   return $response
           ->withHeader('Access-Control-Allow-Origin', '*')
-          ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+          ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization, hue_access_token, hue_refresh_token, hue_username')
           ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
@@ -55,5 +55,6 @@ require __DIR__ . "/routes/greenhouse.php";
 require __DIR__ . "/routes/library.php";
 require __DIR__ . "/routes/user.php";
 require __DIR__ . "/routes/litterbox.php";
+require __DIR__ . "/routes/lights.php";
 
 $app->run();
