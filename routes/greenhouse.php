@@ -90,6 +90,25 @@ $app->group('/greenhouse', function (RouteCollectorProxy $group) {
     return $response;
   });
 
+  //Function to edit an existing plant
+  $group->put('/edit', function (Request $request, Response $response, $args) {
+
+    $decoded = $request->getAttribute("token");
+    $permissions = json_decode($decoded["scope"], true);
+
+    if(!$permissions['greenhouse_write']){
+      return $response->withStatus(401);
+    }
+
+    $db = new Greenhouse();
+    $body = $request->getParsedBody();
+
+    $newPlantID = $db->editPlant($body['plantID'], $body['plantName'], $body['plantSpecies'], $body['plantLocation'], $body['lastWater'], $body['waterFrequency']);
+    
+    $db->logActivity($decoded['user'], 16, $body['plantID']);
+    return $response;
+  });
+
   //Function to delete a plant
   $group->delete('/delete', function (Request $request, Response $response, $args) {
 
