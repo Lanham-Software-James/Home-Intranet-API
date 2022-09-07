@@ -7,7 +7,7 @@ use Slim\Routing\RouteCollectorProxy;
 use HomeIntranet\Database\LitterBox;
 
 $app->group('/litterbox', function (RouteCollectorProxy $group) {
-  //Function to list all the plants
+  //Function to list all the fosters
   $group->get('/fosters', function (Request $request, Response $response, $args) {
 
     $decoded = $request->getAttribute("token");
@@ -39,6 +39,25 @@ $app->group('/litterbox', function (RouteCollectorProxy $group) {
     $newFosterID = $db->addFoster($body['fosterName']);
     
     $db->logActivity($decoded['user'], 14, $newFosterID['data']['new_foster_id']);
+    return $response;
+  });
+
+  //Function to edit a foster
+  $group->put('/edit', function (Request $request, Response $response, $args) {
+
+    $decoded = $request->getAttribute("token");
+    $permissions = json_decode($decoded["scope"], true);
+
+    if(!$permissions['litterbox_write']){
+      return $response->withStatus(401);
+    }
+
+    $db = new LitterBox();
+    $body = $request->getParsedBody();
+
+    $db->editFoster($body['fosterID'], $body['fosterName'], $body['fosterOrder']);
+    
+    $db->logActivity($decoded['user'], 17, $body['fosterID']);
     return $response;
   });
 
