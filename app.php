@@ -16,7 +16,10 @@ $app->addErrorMiddleware(true, true, true);
 
 //JWT Middleware Configuration
 $app->add(new JwtAuthentication([
-  "ignore" => ["/auth/token",],
+  "ignore" => [
+                "/auth/token",
+                "/s3/objects"
+              ],
   "secret" => $secret['secret'],
   "error" => function ($response, $arguments) {
                 $data["status"] = "error";
