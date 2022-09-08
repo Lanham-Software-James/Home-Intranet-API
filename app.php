@@ -18,7 +18,7 @@ $app->addErrorMiddleware(true, true, true);
 $app->add(new JwtAuthentication([
   "ignore" => [
                 "/auth/token",
-                "/s3/objects"
+                "/s3/carousel"
               ],
   "secret" => $secret['secret'],
   "error" => function ($response, $arguments) {
