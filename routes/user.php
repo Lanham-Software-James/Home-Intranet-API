@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use HomeIntranet\Database\User;
-use \Firebase\JWT\JWT;
 
 $app->group('/user', function (RouteCollectorProxy $group) {
   //Function to list all the users
